@@ -30,20 +30,11 @@ CREATE TABLE `empolyee` (
   CONSTRAINT `empolyee_FK` FOREIGN KEY (`emp_id_branch`) REFERENCES `branchs` (`b_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE `event_datail` (
-  `ev_id` int NOT NULL AUTO_INCREMENT,
-  `eventroomid` int DEFAULT NULL,
-  `title` varchar(100) DEFAULT NULL,
-  `start` datetime DEFAULT NULL,
-  `end` datetime DEFAULT NULL,
-  `color` varchar(100) DEFAULT NULL,
-  `name` varchar(100) DEFAULT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`ev_id`),
-  KEY `event_datail_FK` (`eventroomid`),
-  CONSTRAINT `event_datail_FK` FOREIGN KEY (`eventroomid`) REFERENCES `room_details` (`rd_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+CREATE TABLE `status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `status` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 CREATE TABLE `room_details` (
@@ -61,14 +52,19 @@ CREATE TABLE `room_details` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `status` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `status` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
+CREATE TABLE `event_datail` (
+  `ev_id` int NOT NULL AUTO_INCREMENT,
+  `eventroomid` int DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `start` datetime DEFAULT NULL,
+  `end` datetime DEFAULT NULL,
+  `color` varchar(100) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ev_id`),
+  KEY `event_datail_FK` (`eventroomid`),
+  CONSTRAINT `event_datail_FK` FOREIGN KEY (`eventroomid`) REFERENCES `room_details` (`rd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 
 # Data you can insert from webpage 
