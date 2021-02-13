@@ -1,15 +1,13 @@
-# Ryomen Sukuna
+# Name project is Ryomen Sukuna 
+sukuna is my favorite character
 
-jong hong pa chom
-
-
-# HOW TO LOGIN
+# 1. HOW TO LOGIN
 
 User is :admin
 Password is :123
 
 
-# Data base
+# 2. Data base
 
 CREATE TABLE `branchs` (
   `b_id` int NOT NULL AUTO_INCREMENT,
