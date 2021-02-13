@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link type="text/css" th:href="@{/css/calendarStyle.css}" rel="stylesheet" >
+    <meta charset="UTF-8">
+    <meta charset='utf-8'/>
+    <link href='../lib/main.css' rel='stylesheet'/>
+    <script src='../lib/main.js'></script>
+    <title>Calendar</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+</head>
+<body>
+<div id="main">
+    <!-- Modal -->
+
+    <!-- The Modal -->
+    <div id="roomEventDetails" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div>
+                <span class="close-event-modal" th:onclick="closeModal()">&times;</span>
+            </div>
+            <p id="detailTitle">Title</p>
+            <p id="detailDescription">Description</p>
+            <p id="detailName">Name</p>
+            <p id="detailStart">Start</p>
+            <p id="detailEnd">End</p>
+        </div>
+    </div>
+
+    <div class="container" style="height: 80%;">
+        <div class="row">
+            <div class="col-lg-6">
+                <div>
+                    <select name="listBranch" id="listBranch" th:onchange="'setBranchId(value)'">
+                            <option selected disabled>Please Select Branch</option>
+                            <option th:each="branch, iter : ${branchDetail}" th:text="${branch.b_name}" id="branchName"
+                            th:value="${iter.index}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div>
+                    <select name="listRooms" id="listRooms" th:onchange="'getEvents(value)'" disabled>
+                        <option selected disabled>Please Select Room</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card p-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div style="float: right;">
+                            <a href="/calendar/create" id="addEventButton" class="btn btn-secondary" >Create Event</a>
+                            <a href="/calendar/create-branch" id="addBranchButton" class="btn btn-secondary">Create Branch</a>
+                            <a href="/calendar/create-room" id="addRoomButton" class="btn btn-secondary">Create Room</a>
+                        </div>
+                    </div>
+                    <div id='calendar' style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var branchLists = /*[[${branchDetail}]]*/ [];
+    /*]]>*/
+
+    // var branchLists =  */[[${branchDetail}]]*/; // get data from controller
+    var branchId = null
+    // console.log([[${branchDetail}]])
+
+    function setBranchId(bid) {
+        branchId = bid
+        console.log(bid)
+        addOptions()
+    }
+
+    function addOptions() {
+        removeOptions()
+        var select = document.getElementById('listRooms');
+        console.log(this.branchLists)
+        console.log(branchId)
+        for (var i = 0; i< this.branchLists[branchId].roomDetails.length; i++) {
+            select.options[select.options.length] = new Option(this.branchLists[branchId].roomDetails[i].rd_name, i);
+        }
+        select.disabled = false
+    }
+
+    function removeOptions() {
+        var select = document.getElementById('listRooms');
+        var optionsLength = select.options.length
+        if (select.options.length > 0) {
+            for (var i = 0; i < optionsLength-1; i++) {
+                select.options[1].remove()
+            }
+        }
+    }
+
+    function getEvents(index) {
+        var data = branchLists[branchId].roomDetails[index].eventList
+        drawCalendar(data)
+    }
+
+    function showAddEventButton() {
+        document.getElementById('addEventButton').style.display = 'block'
+    }
+
+    function drawCalendar(data) {
+        showAddEventButton()
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+                header: {
+                    left: 'title',
+                    center: 'agendaDay,agendaWeek,month',
+                    right: 'prev,next today'
+                },
+                initialView: 'dayGridMonth',
+                editable: false,
+                events: data,
+                eventClick: function(info) {
+                    var eventObj = info.event;
+                    showModal()
+                    setEventDetailsModal(eventObj)
+                }
+            }
+        );
+        calendar.render();
+    };
+
+    function showModal() {
+        document.getElementById('roomEventDetails').style.display = 'block'
+    }
+    function closeModal() {
+        document.getElementById('roomEventDetails').style.display = 'none'
+    }
+
+    function setEventDetailsModal(eventObj) {
+        document.getElementById('detailTitle').innerText = 'หัวข้อห้องประชุม : ' + eventObj.title
+        document.getElementById('detailDescription').innerText = 'หมายเหตุ : ' + eventObj.extendedProps.description
+        document.getElementById('detailName').innerText = 'ชื่อผู้จอง : ' + eventObj.extendedProps.name
+        document.getElementById('detailStart').innerText = 'เริ่มการจอง : ' + eventObj.start
+        document.getElementById('detailEnd').innerText = 'สิ้นสุดการจอง : ' + eventObj.end
+    }
+
+</script>
+</html>
