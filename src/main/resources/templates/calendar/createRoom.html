@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" th:href="@{/css/calendarStyle.css}" rel="stylesheet">
+    <link href='../lib/main.css' rel='stylesheet'/>
+
+    <script src='../lib/main.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Create Room</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Charm:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="back">
+    <img style="width: 168%;height: 100%;" src="/images/room-corporate-business.jpg">
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box effect1" style="margin: auto;margin-top: 5%; width: 60%;">
+                <form id="submitForm">
+                    <div class="card" style="width: 60%; margin: auto;border-radius:20px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div>
+                                        <select name="listBranch" id="listBranch" th:onchange="'setBranchId(value)'">
+                                            <option selected disabled>Please Select Branch</option>
+                                            <option th:each="branch : ${branchs}" th:text="${branch.b_name}"
+                                                    id="branchName"
+                                                    th:value="${branch.b_id}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group mb-4">
+                                <h2 for="rd_name">ชื่อห้องประชุม</h2>
+
+                                <input type="text" class="form-control" id="rd_name" name="rd_name" required="">
+                            </div>
+                            <div class="form-group mb-4">
+                                <h2 for="rd_floor">ชั้นของห้องประชุม</h2>
+                                <input type="text" class="form-control" id="rd_floor" name="rd_floor" required="">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <form action="/action_page.php">
+                                    <h2 for="rd_building">อาคาร ของห้องประชุม</h2>
+                                    <input type="text" class="form-control" id="rd_building" name="rd_building"
+                                           required="">
+                                </form>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-lg-10">
+                                    <button type="submit" class="btn btn-outline-success" id="btnsub">
+                                        Create
+                                    </button>
+                                    <a href="/calendar" class="btn btn-outline-primary">Back to Home</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script th:inline="javascript">
+    var branchId = null
+
+
+    function postRoom() {
+        var nameT = $('#rd_name').val();
+        var rd_floor = $('#rd_floor').val();
+        var rd_building = $('#rd_building').val();
+
+        console.log(nameT + "nameT in post")
+        if (nameT != "" || rd_floor != "" || rd_building != "") {
+            var gg = $.post("/calendar/create-room", {
+                rd_name: $('#rd_name').val(),
+                rd_id_branch: branchId,
+                rd_floor: $('#rd_floor').val(),
+                rd_building: $('#rd_building').val()
+            }, function (data) {
+                console.log(gg)
+            })
+                .done(function () {
+                    window.location.reload(false);
+                    alert("Create Room Successfully");
+                    console.log(gg)
+
+                })
+                .fail(function () {
+                    console.log(gg)
+                })
+        } else {
+            alert("กรุณาตรวจสอบข้อมูล")
+        }
+
+    }
+
+    var addEvent = document.getElementById("btnsub")
+    addEvent.onclick = postRoom
+
+
+  function setBranchId(bid) {
+        branchId = bid
+    }
+
+
+</script>
+</html>
+
+
+<style>
+    .back {
+        /*background-color: #5e5e5e;*/
+        position: absolute;
+        background-size: cover;
+        -webkit-filter: blur(6px);
+        z-index: 0;
+        height: 100%;
+        margin: 0;
+
+    }
+
+    img {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    h2 {
+        font-family: 'Charm', cursive;
+    }
+
+</style>

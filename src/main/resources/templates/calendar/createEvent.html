@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" th:href="@{/css/calendarStyle.css}" rel="stylesheet">
+    <link href='../lib/main.css' rel='stylesheet'/>
+
+    <script src='../lib/main.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Create Event</title>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Charm:wght@700&display=swap" rel="stylesheet">
+</head>
+<style>
+    .back {
+        /*background-color: #5e5e5e;*/
+        position: absolute;
+        background-size: cover;
+        -webkit-filter: blur(6px);
+        z-index: 0;
+        height: 100%;
+        margin: 0;
+
+    }
+    img{
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    h4 {
+        font-family: 'Charm', cursive;
+    }
+
+
+
+</style>
+<body>
+<div class="back" >
+    <img style="width: 168%;height: 100%;" src="/images/room-corporate-business.jpg">
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box effect1" style="margin: auto;margin-top: 20px; width: 60%;">
+                <form id="submitForm">
+                    <div class="card" style="width: 60%; margin: auto;border-radius:20px;">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div>
+                                        <select name="listBranch" id="listBranch" th:onchange="'setBranchId(value)'">
+                                            <option selected disabled>Please Select Branch</option>
+                                            <option th:each="branch, iter : ${branchDetail}" th:text="${branch.b_name}"
+                                                    id="branchName"
+                                                    th:value="${iter.index}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div>
+                                        <select name="listRooms" id="listRooms" th:onchange="'getEvents(value)'"
+                                                disabled>
+                                            <option selected disabled>Please Select Room</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <input type="hidden" class="form-control" id="id" th:onchange="'formm(value)'"
+                                       name="id">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <h4 for="name">ชื่อผู้จอง</h4>
+
+                                <input type="text" class="form-control" id="name" name="name" required="">
+                            </div>
+                            <div class="form-group mb-3">
+                                <h4 for="title">หัวข้อห้องประชุม</h4>
+                                <input type="text" class="form-control" id="title" name="title" required="">
+                            </div>
+                            <div class="form-group mb-3">
+                                <h4 for="description">รายละเอียดการจอง</h4>
+                                <input type="text" class="form-control" id="description" name="description" required="">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <form action="/action_page.php">
+                                    <h4 for="start">เริ่มการจอง</h4>
+                                    <input type="datetime-local" id="start" name="start" required="">
+                                </form>
+                            </div>
+
+
+                            <div class="form-group mb-3">
+                                <form action="/action_page.php">
+                                    <h4 for="stop" style="padding-right: 33px;">สิ้นสุด</h4>
+                                    <input type="datetime-local" id="stop" name="stop" required="">
+                                </form>
+                            </div>
+                            <div class="form-group">
+                                <form action="/action_page.php">
+                                    <h4 for="color">เลือกสีที่ใช่:</h4>
+                                    <input type="color" id="color" name="color" value="#ff0000"><br><br>
+                                </form>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-lg-10">
+                                    <button type="submit" class="btn btn-success" id="btnsub">
+                                        Create
+                                    </button>
+                                    <a href="/calendar" class="btn btn-primary">Back to Home</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script th:inline="javascript">
+    var branchLists = [[${branchDetail}]]; // get data from controller
+    var branchId = null
+    var rdid = null
+
+    var addEvent = document.getElementById("btnsub")
+    addEvent.onclick = postEvent
+
+    function postEvent() {
+        var nameT = $('#name').val();
+        var stop = $('#stop').val();
+        var start = $('#start').val();
+
+        console.log(nameT + "rdid in post")
+        if (nameT != "" || stop != "" || start != "") {
+            var gg = $.post("/calendar/create", {
+                title: $('#title').val(),
+                id: rdid,
+                start: $('#start').val(),
+                description: $('#description').val(),
+                name: $('#name').val(),
+                stop: $('#stop').val(),
+                color: $('#color').val()
+            }, function (data) {
+                console.log(gg)
+            })
+                .done(function () {
+                    var statuss = [[${status}]]
+                    alert(statuss)
+                    alert("Create Event Successfully");
+                    // window.location.reload(true);
+                    console.log(gg)
+
+                })
+                .fail(function () {
+                    console.log(gg)
+                })
+        } else {
+            alert("กรุณาตรวจสอบข้อมูล")
+        }
+
+    }
+
+
+
+    function setBranchId(bid) {
+        branchId = bid
+        addOptions()
+    }
+
+    function addOptions() {
+        removeOptions()
+        var select = document.getElementById('listRooms');
+        for (var i = 0; i < branchLists[branchId].roomDetails.length; i++) {
+            select.options[select.options.length] = new Option(branchLists[branchId].roomDetails[i].rd_name, i);
+        }
+        select.disabled = false
+    }
+
+    function removeOptions() {
+        var select = document.getElementById('listRooms');
+        var optionsLength = select.options.length
+        if (select.options.length > 0) {
+            for (var i = 0; i < optionsLength - 1; i++) {
+                select.options[1].remove()
+            }
+        }
+    }
+
+    function getEvents(index) {
+        console.log(branchLists[branchId].roomDetails[index].rd_id)
+        var data = branchLists[branchId].roomDetails[index].eventList
+        rdid = branchLists[branchId].roomDetails[index].rd_id
+    }
+
+</script>
+</html>
+
