@@ -24,7 +24,6 @@ public class CalendarController {
         model.addAttribute("branchDetail", branchDetail);
 
         return "calendar/calen";
-
     }
 
 //    @GetMapping("")
@@ -46,6 +45,8 @@ public class CalendarController {
         return "calendar/createBranch";
     }
 
+
+
     @GetMapping("/create-room")
     public String createRoom(Model model){
         model.addAttribute("branchs",calenService.getBranch());
@@ -55,7 +56,7 @@ public class CalendarController {
     @PostMapping("/create-room")
     public String createRoom(RoomDetail roomDetail){
         calenService.createRoom(roomDetail);
-        return "redirect:/calendar/";
+        return "redirect:/calendar/createRoom";
     }
 
     @GetMapping("/create")

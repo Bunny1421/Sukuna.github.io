@@ -33,7 +33,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div>
+                                    <div class="mb-4">
                                         <select name="listBranch" id="listBranch" th:onchange="'setBranchId(value)'">
                                             <option selected disabled>Please Select Branch</option>
                                             <option th:each="branch : ${branchs}" th:text="${branch.b_name}"
@@ -65,10 +65,10 @@
 
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-lg-10">
-                                    <button type="submit" class="btn btn-outline-success" id="btnsub">
+                                    <button type="submit" class="btn btn-success" id="btnsub">
                                         Create
                                     </button>
-                                    <a href="/calendar" class="btn btn-outline-primary">Back to Home</a>
+                                    <a href="/calendar" class="btn btn-primary">Back to Home</a>
                                 </div>
                             </div>
 
